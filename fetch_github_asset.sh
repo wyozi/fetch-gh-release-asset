@@ -28,7 +28,7 @@ fi
 
 AUTH_HEADER="Authorization: token ${TOKEN}"
 API_URL="https://api.github.com/repos/$REPO"
-ASSET_ID=$(curl $API_URL/releases/${INPUT_VERSION} | jq -r ".assets | map(select(.name == \"${INPUT_FILE}\"))[0].id")
+ASSET_ID=$(curl $API_URL/releases/${INPUT_VERSION} | tee >(cat) | jq -r ".assets | map(select(.name == \"${INPUT_FILE}\"))[0].id")
 
 if [[ -z "$ASSET_ID" ]]; then
   echo "Could not find asset id"
