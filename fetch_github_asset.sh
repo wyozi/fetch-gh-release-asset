@@ -26,7 +26,8 @@ if ! [[ -z ${INPUT_TOKEN} ]]; then
   TOKEN=$INPUT_TOKEN
 fi
 
-API_URL="https://$TOKEN:@api.github.com/repos/$REPO"
+AUTH_HEADER="Authorization: token ${TOKEN}"
+API_URL="https://api.github.com/repos/$REPO"
 ASSET_ID=$(curl $API_URL/releases/${INPUT_VERSION} | jq -r ".assets | map(select(.name == \"${INPUT_FILE}\"))[0].id")
 
 if [[ -z "$ASSET_ID" ]]; then
@@ -37,6 +38,7 @@ fi
 curl \
   -J \
   -L \
+  -H "${AUTH_HEADER}" \
   -H "Accept: application/octet-stream" \
   "$API_URL/releases/assets/$ASSET_ID" \
   -o ${INPUT_FILE}
